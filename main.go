@@ -8,6 +8,7 @@ import (
 	"unicode/utf8"
     "math/rand"
     "time"
+    "sync"
 )
 
 func main() {
@@ -15,8 +16,15 @@ func main() {
 	args := os.Args[1:]
 	target := args[1]
 	inputHash := args[0]
-
-    Mine(inputHash, target)
+    var wg sync.WaitGroup
+    wg.Add(4)
+    for i := 0; i < 4; i++ {
+        go func(i int) {
+            defer wg.Done()
+            Mine(inputHash, target)
+        }(i)
+    }
+    wg.Wait()
 }
 
 func Mine(input string, target string) bool {
