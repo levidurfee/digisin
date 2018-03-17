@@ -14,19 +14,26 @@ func main() {
 	target := args[1]
 	inputHash := args[0]
 
-	var i uint64
+    Mine(inputHash, target)
+}
+
+func Mine(input string, target string) bool {
+    var i uint64
 
 	for i = 0; i < 18446744073709551615; i++ {
-		hash := GetHash(inputHash + "." + S(i))
+		hash := GetHash(input + "." + S(i))
 		fmt.Println(hash)
 
 		if CheckHash(hash, target) {
-            fmt.Println("Found----------")
-            fmt.Println(args[0] + "." + S(i))
+            fmt.Println("---------Found----------")
+            fmt.Println(input + "." + S(i))
 			fmt.Println(hash)
-			os.Exit(1)
+
+            return true
 		}
 	}
+
+    return false
 }
 
 func CheckHash(hash string, target string) bool {
