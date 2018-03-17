@@ -21,7 +21,9 @@ func main() {
 		fmt.Println(hash)
 
 		if CheckHash(hash, target) {
-			fmt.Println("Found: " + S(i))
+            fmt.Println("Found----------")
+            fmt.Println(args[0] + "." + S(i))
+			fmt.Println(hash)
 			os.Exit(1)
 		}
 	}
