@@ -21,20 +21,20 @@ func main() {
     for i := 0; i < 4; i++ {
         go func(i int) {
             defer wg.Done()
-            Mine(inputHash, target)
+            Mine(inputHash, target, i)
         }(i)
     }
     wg.Wait()
 }
 
-func Mine(input string, target string) bool {
+func Mine(input string, target string, x int) bool {
     var i uint64
 
 
 	for i = 0; i < 18446744073709551615; i++ {
         r := rand.New(rand.NewSource(time.Now().UnixNano()))
         nonce := r.Uint64()
-        //fmt.Println(nonce)
+        fmt.Printf("Thread %d: %s\n", x, S(nonce))
 
 		hash := GetHash(input + "." + S(nonce))
 		fmt.Println(hash)
