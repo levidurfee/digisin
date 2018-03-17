@@ -38,9 +38,7 @@ func CheckHash(hash string, target string) bool {
 }
 
 func TrimHash(hash string, len int) string {
-	start := 128 - len
-	trimmed := hash[start:128]
-	//fmt.Println(trimmed)
+	trimmed := hash[0:len]
 
 	return trimmed
 }
