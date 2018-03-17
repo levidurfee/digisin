@@ -34,10 +34,8 @@ func Mine(input string, target string, x int) bool {
 	for i = 0; i < 18446744073709551615; i++ {
         r := rand.New(rand.NewSource(time.Now().UnixNano()))
         nonce := r.Uint64()
-        fmt.Printf("Thread %d: %s", x, S(nonce))
-
-		hash := GetHash(input + "." + S(nonce))
-		fmt.Println("\tHash: " + hash[0:32] + "...")
+        hash := GetHash(input + "." + S(nonce))
+        fmt.Printf("Thread %d: %s\tHash: %s...\n", x, S(nonce), hash[0:32])
 
 		if CheckHash(hash, target) {
             fmt.Println("---------Found----------")
