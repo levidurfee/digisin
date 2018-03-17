@@ -6,6 +6,8 @@ import (
 	"os"
 	"strconv"
 	"unicode/utf8"
+    "math/rand"
+    "time"
 )
 
 func main() {
@@ -20,13 +22,18 @@ func main() {
 func Mine(input string, target string) bool {
     var i uint64
 
+
 	for i = 0; i < 18446744073709551615; i++ {
-		hash := GetHash(input + "." + S(i))
-		fmt.Println(hash)
+        r := rand.New(rand.NewSource(time.Now().UnixNano()))
+        nonce := r.Uint64()
+        fmt.Println(nonce)
+
+		hash := GetHash(input + "." + S(nonce))
+		//fmt.Println(hash)
 
 		if CheckHash(hash, target) {
             fmt.Println("---------Found----------")
-            fmt.Println(input + "." + S(i))
+            fmt.Println(input + "." + S(nonce))
 			fmt.Println(hash)
 
             return true
