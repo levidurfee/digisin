@@ -12,14 +12,14 @@ import (
 
 func main() {
 	args := os.Args[1:]
+    done := make(chan bool)
 
 	var messages chan string = make(chan string)
 
-	go Mine(args[0], args[1], messages)
+	go Mine(args[0], args[1], messages, done)
 	go Printer(messages)
 
-    var input string
-    fmt.Scanln(&input)
+    <-done
 }
 
 func Printer(c chan string) {
@@ -29,7 +29,7 @@ func Printer(c chan string) {
 	}
 }
 
-func Mine(input string, target string, messages chan string) {
+func Mine(input string, target string, messages chan string, done chan bool) {
 	for {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		nonce := r.Uint64()
@@ -43,6 +43,7 @@ func Mine(input string, target string, messages chan string) {
 			fmt.Println(hash)
 
             os.Exit(0)
+            done <- true
 		}
 	}
 }
