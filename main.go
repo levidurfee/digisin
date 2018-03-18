@@ -11,24 +11,23 @@ import (
 	"unicode/utf8"
 )
 
+var wg sync.WaitGroup
+
 func main() {
 	fmt.Println("Starting")
 	args := os.Args[1:]
 	target := args[1]
 	inputHash := args[0]
-	var wg sync.WaitGroup
-	wg.Add(4)
 	for i := 0; i < 4; i++ {
-		go func(i int) {
-			defer wg.Done()
-			Mine(inputHash, target, i)
-		}(i)
+        wg.Add(1)
+	    go Mine(inputHash, target, i)
 	}
 	wg.Wait()
 }
 
 func Mine(input string, target string, x int) bool {
 	var i uint64
+    defer wg.Done()
 
 	for i = 0; i < 18446744073709551615; i++ {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
