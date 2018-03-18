@@ -16,15 +16,17 @@ var wg sync.WaitGroup
 func main() {
 	args := os.Args[1:]
 
+    messages := make(chan string)
+
 	for i := 0; i < 4; i++ {
         wg.Add(1)
-	    go Mine(args[0], args[1], i)
+	    go Mine(args[0], args[1], i, messages)
 	}
 
 	wg.Wait()
 }
 
-func Mine(input string, target string, x int) bool {
+func Mine(input string, target string, x int, messages chan string) bool {
 	var i uint64
     defer wg.Done()
 
