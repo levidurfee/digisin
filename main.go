@@ -36,11 +36,9 @@ func Mine(input string, target string, messages chan string, done chan bool) {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		nonce := r.Uint64()
 		hash := GetHash(input + "." + S(nonce))
-        hps := getHashesPerSecond()
+		hps := getHashesPerSecond()
 		message := fmt.Sprintf("%s\tHash: %s... %d/hps", S(nonce), hash[0:32], hps)
 		messages <- message
-
-
 
 		if CheckHash(hash, target) {
 			fmt.Println("---------Found----------")
@@ -54,16 +52,16 @@ func Mine(input string, target string, messages chan string, done chan bool) {
 }
 
 func getHashesPerSecond() int {
-    i++
-    t := time.Now()
-    elapsed := t.Sub(start)
-    elapsedSeconds := int(elapsed.Seconds())
-    if elapsedSeconds > 0 {
-        hps := i / elapsedSeconds
-        return hps
-    }
+	i++
+	t := time.Now()
+	elapsed := t.Sub(start)
+	elapsedSeconds := int(elapsed.Seconds())
+	if elapsedSeconds > 0 {
+		hps := i / elapsedSeconds
+		return hps
+	}
 
-    return 0
+	return 0
 }
 
 func CheckHash(hash string, target string) bool {
