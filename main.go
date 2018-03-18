@@ -6,46 +6,45 @@ import (
 	"math/rand"
 	"os"
 	"strconv"
-	"sync"
 	"time"
 	"unicode/utf8"
 )
 
 func main() {
-	fmt.Println("Starting")
 	args := os.Args[1:]
-	target := args[1]
-	inputHash := args[0]
-	var wg sync.WaitGroup
-	wg.Add(4)
-	for i := 0; i < 4; i++ {
-		go func(i int) {
-			defer wg.Done()
-			Mine(inputHash, target, i)
-		}(i)
-	}
-	wg.Wait()
+
+	var messages chan string = make(chan string)
+
+	go Mine(args[0], args[1], messages)
+	go Printer(messages)
+
+    var input string
+    fmt.Scanln(&input)
 }
 
-func Mine(input string, target string, x int) bool {
-	var i uint64
+func Printer(c chan string) {
+	for {
+		msg := <-c
+		fmt.Println(msg)
+	}
+}
 
-	for i = 0; i < 18446744073709551615; i++ {
+func Mine(input string, target string, messages chan string) {
+	for {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		nonce := r.Uint64()
 		hash := GetHash(input + "." + S(nonce))
-		fmt.Printf("Thread %d: %s\tHash: %s...\n", x, S(nonce), hash[0:32])
+		message := fmt.Sprintf("%s\tHash: %s...", S(nonce), hash[0:32])
+		messages <- message
 
 		if CheckHash(hash, target) {
 			fmt.Println("---------Found----------")
 			fmt.Println(input + "." + S(nonce))
 			fmt.Println(hash)
 
-			return true
+            os.Exit(0)
 		}
 	}
-
-	return false
 }
 
 func CheckHash(hash string, target string) bool {
