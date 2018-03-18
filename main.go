@@ -14,14 +14,13 @@ import (
 var wg sync.WaitGroup
 
 func main() {
-	fmt.Println("Starting")
 	args := os.Args[1:]
-	target := args[1]
-	inputHash := args[0]
+
 	for i := 0; i < 4; i++ {
         wg.Add(1)
-	    go Mine(inputHash, target, i)
+	    go Mine(args[0], args[1], i)
 	}
+
 	wg.Wait()
 }
 
