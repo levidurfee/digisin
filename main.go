@@ -32,7 +32,6 @@ func Printer(c chan string) {
 	for {
         if x > 10 {
             x = 1
-            tm.Clear()
         }
         tm.MoveCursor(1, x)
 
