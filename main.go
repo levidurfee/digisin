@@ -42,13 +42,25 @@ func Printer(c chan string) {
 	}
 }
 
+func Pad(s string) string {
+    l := utf8.RuneCountInString(s)
+    if l < 25 {
+        diff := 25 - l
+        for y := 0; y < diff; y++ {
+            s = fmt.Sprintf("%s ", s)
+        }
+    }
+
+    return s
+}
+
 func Mine(input string, target string, messages chan string, done chan bool) {
 	for {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		nonce := r.Uint64()
 		hash := GetHash(input + "." + S(nonce))
 		hps := getHashesPerSecond()
-		message := fmt.Sprintf("%s\tHash: %s... %d/hps", S(nonce), hash[0:32], hps)
+		message := fmt.Sprintf("%s Hash: %s... %d/hps", Pad(S(nonce)), hash[0:32], hps)
 		messages <- message
 
 		if CheckHash(hash, target) {
