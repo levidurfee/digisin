@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha512"
 	"fmt"
+	tm "github.com/buger/goterm"
 	"math/rand"
 	"os"
 	"strconv"
@@ -18,6 +19,8 @@ func main() {
 	done := make(chan bool)
 	messages := make(chan string)
 
+    tm.Clear()
+
 	go Mine(args[0], args[1], messages, done)
 	go Printer(messages)
 
@@ -25,9 +28,17 @@ func main() {
 }
 
 func Printer(c chan string) {
+    x := 1
 	for {
+        if x > 10 {
+            x = 1
+        }
+        tm.MoveCursor(1, x)
+
 		msg := <-c
-		fmt.Println(msg)
+		tm.Println(msg)
+        tm.Flush()
+        x++
 	}
 }
 
@@ -41,12 +52,23 @@ func Mine(input string, target string, messages chan string, done chan bool) {
 		messages <- message
 
 		if CheckHash(hash, target) {
-			fmt.Println("---------Found----------")
-			fmt.Println(input + "." + S(nonce))
-			fmt.Println(hash)
+			t := time.Now()
+			elapsed := t.Sub(start)
+
+            tm.Clear()
+            tm.MoveCursor(1, 1)
+
+			tm.Println("---------Found----------")
+			tm.Println("Attempts:\t" + strconv.Itoa(i))
+			tm.Println("Duration:\t" + elapsed.String())
+			tm.Println()
+			tm.Println("Input:\t\t" + input + "." + S(nonce))
+			tm.Println("Hash:\t\t" + hash)
+            tm.Flush()
+
+            done <- true
 
 			os.Exit(0)
-			done <- true
 		}
 	}
 }
